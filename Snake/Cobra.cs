@@ -5,27 +5,33 @@ using System.Text;
 
 namespace Snake
 {
+    public enum Direction
+    {
+        Up, Down, Left, Right
+    }
 
     class Cobra
     {
         private Controls controls;
         public int tailSize { get; set; }
-        public byte direcao;
-        internal int nextX;
-        internal int nextY;
+        public Direction direcao;
+        internal int nextFrontX;
+        internal int nextFrontY;
 
-        public Vector nextHeadPosition;
+        public Vector frontPosition;
+        public Vector turnPosition;
         public List<Vector> segments;
 
         public Cobra ()
         {
-            nextX = -1;
-            nextY = -1;
-            nextHeadPosition = new Vector(-1, -1);
+            nextFrontX = -1;
+            nextFrontY = -1;
+            frontPosition = new Vector(-1, -1);
+            turnPosition = new Vector(-1, -1);
             controls = new Controls();
             segments = new List<Vector>{new Vector(0, 0)};
             tailSize = 0;
-            direcao = 0;
+            direcao = Direction.Right;
 
         }
 
@@ -35,47 +41,48 @@ namespace Snake
             UpdateTail();   
             switch (direcao)
             {
-                case 0:
+                case Direction.Right:
                     if (segments[0].X == (Screen.WIDTH - 1)) segments[0].X = 0;
                     else
                     {
                         segments[0].X++;
-                        nextX = segments[0].X + 1;
-                        nextY = segments[0].Y;
+
+                        nextFrontX = segments[0].X + 1;
+                        nextFrontY = segments[0].Y;
                     }
                     break;
-                case 1:
+                case Direction.Down:
                     if (segments[0].Y == (Screen.HEIGHT - 1)) segments[0].Y = 0;
                     else
                     {
                         segments[0].Y++;
-                        nextX = segments[0].X;
-                        nextY = segments[0].Y + 1;
+
+                        nextFrontX = segments[0].X;
+                        nextFrontY = segments[0].Y + 1;
                     }
                     break;
-                case 2:
+                case Direction.Left:
                     if (segments[0].X == 0) segments[0].X = (Screen.WIDTH - 1);
                     else
                     {
                         segments[0].X--;
-                        nextX = segments[0].X - 1;
-                        nextY = segments[0].Y;
+
+                        nextFrontX = segments[0].X - 1;
+                        nextFrontY = segments[0].Y;
                     }
                     break;
-                case 3:
+                case Direction.Up:
                     if (segments[0].Y == 0) segments[0].Y = (Screen.HEIGHT - 1);
                     else
                     {
                         segments[0].Y--;
-                        nextX = segments[0].X;
-                        nextY = segments[0].Y - 1;
+
+                        nextFrontX = segments[0].X;
+                        nextFrontY = segments[0].Y - 1;
                     }
                     break;
             }
-
-            nextHeadPosition = new Vector(nextX, nextY);
-
-
+            frontPosition = new Vector(nextFrontX, nextFrontY);
         }
 
         public void AddTail()

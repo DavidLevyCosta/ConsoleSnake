@@ -11,6 +11,7 @@ namespace Snake
         static Engine engine = new Engine();
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
             Console.OutputEncoding = Encoding.UTF8;
             engine.Start();
         }

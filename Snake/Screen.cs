@@ -77,6 +77,11 @@ namespace Snake
                             sb.Append('▓');
 
                             break;
+                        case 3:
+                            sb.Append('[');
+                            sb.Append(']');
+
+                            break;
                         default:
                             sb.Append(' ');
                             sb.Append(' ');

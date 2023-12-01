@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Snake;
 using System.Diagnostics;
+using System.IO;
 
 namespace Snake
 {
@@ -19,12 +20,14 @@ namespace Snake
         Controls controls;
         Random rand;
 
+        bool turnColided;
+
         private Vector fruta;
 
         byte desiredFps;
 
         public Engine() {
-            
+            turnColided = false;
             cobra = new Cobra();
             screen = new Screen(cobra);
             controls = new Controls();
@@ -59,7 +62,7 @@ namespace Snake
 
         public void Update()
         {
-            if (!Colided()) { 
+            if (!Colided() && !turnColided) { 
                 ChangeDirection();
                 cobra.Move();
                 for (int i = 0; i < Screen.HEIGHT; i++)
@@ -86,7 +89,6 @@ namespace Snake
 
                         for (int k = 0; k < cobra.tailSize + 1; k++)
                         {
-
                             if (i == cobra.segments[k].Y && j == cobra.segments[k].X)
                             {
                                 screen.canva[i, j] = 1;
@@ -95,7 +97,7 @@ namespace Snake
                         }
 
                     }
-                }
+                }               
             } 
             else
             {
@@ -117,10 +119,38 @@ namespace Snake
             Key nextKeyInQueue;
             if (controls.keyQueue.TryDequeue(out nextKeyInQueue))
             {
-                if (nextKeyInQueue == Key.Right && cobra.direcao != 2) cobra.direcao = 0;
-                if (nextKeyInQueue == Key.Down && cobra.direcao != 3) cobra.direcao = 1;
-                if (nextKeyInQueue == Key.Left && cobra.direcao != 0) cobra.direcao = 2;
-                if (nextKeyInQueue == Key.Up && cobra.direcao != 1) cobra.direcao = 3;
+                if (nextKeyInQueue == Key.RightArrow && cobra.direcao != Direction.Left)
+                {
+                    if (cobra.direcao == Direction.Down || cobra.direcao == Direction.Up)
+                    {
+                        TurnColided(cobra.segments[0].X + 1, cobra.segments[0].Y);
+                    }
+                    cobra.direcao = Direction.Right;
+                }
+                if (nextKeyInQueue == Key.DownArrow && cobra.direcao != Direction.Up)
+                {
+                    if (cobra.direcao == Direction.Right || cobra.direcao == Direction.Left)
+                    {
+                        TurnColided(cobra.segments[0].X, cobra.segments[0].Y + 1);
+                    }
+                    cobra.direcao = Direction.Down;
+                }
+                if (nextKeyInQueue == Key.LeftArrow && cobra.direcao != Direction.Right)
+                {
+                    if (cobra.direcao == Direction.Up || cobra.direcao == Direction.Down)
+                    {
+                        TurnColided(cobra.segments[0].X - 1, cobra.segments[0].Y);
+                    }
+                    cobra.direcao = Direction.Left;
+                }
+                if (nextKeyInQueue == Key.UpArrow && cobra.direcao != Direction.Down)
+                {
+                    if (cobra.direcao == Direction.Right || cobra.direcao == Direction.Left)
+                    {
+                        TurnColided(cobra.segments[0].X, cobra.segments[0].Y - 1);
+                    }
+                    cobra.direcao = Direction.Up;
+                }
             }
         }
 
@@ -128,8 +158,15 @@ namespace Snake
         {
             while (true)
             {
-                controls.ReadKeys();
-                Debug.WriteIf(controls.keyQueue.Count != 0, string.Join(", ", controls.keyQueue) + "\n");
+                try
+                {
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    controls.ReadKeys(keyInfo);
+                    //Debug.WriteIf(controls.keyQueue.Count != 0, string.Join(", ", controls.keyQueue) + "\n");
+                } catch (Exception e)
+                {
+                    Debug.Write("falha ao ler input!\n" + e);
+                }
             }
 
         }
@@ -147,10 +184,18 @@ namespace Snake
             fruta.Y = target.Y;
         }
 
-        internal bool Colided()
+
+        public bool Colided()
         {
             List<Vector> tail = cobra.segments.GetRange(1, cobra.segments.Count - 1);
-            return tail.Contains(cobra.nextHeadPosition);
+            //return tail.Contains(cobra.frontPosition) || tail.Contains(cobra.turnPosition);
+            return tail.Contains(cobra.frontPosition);
+        }
+        public void TurnColided(int X, int Y)
+        {
+            Vector turnColision = new Vector(X, Y);
+            List<Vector> tail = cobra.segments.GetRange(1, cobra.segments.Count - 1);
+            turnColided = tail.Contains(turnColision) && cobra.tailSize > 3;
         }
     }
 }
