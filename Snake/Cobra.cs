@@ -42,7 +42,7 @@ namespace Snake
             switch (direcao)
             {
                 case Direction.Right:
-                    if (segments[0].X == (Screen.WIDTH - 1)) segments[0].X = 0;
+                    if (segments[0].X == (Screen.FIELD_WIDTH - 1)) segments[0].X = 0;
                     else
                     {
                         segments[0].X++;
@@ -52,7 +52,7 @@ namespace Snake
                     }
                     break;
                 case Direction.Down:
-                    if (segments[0].Y == (Screen.HEIGHT - 1)) segments[0].Y = 0;
+                    if (segments[0].Y == (Screen.FIELD_HEIGHT - 1)) segments[0].Y = 0;
                     else
                     {
                         segments[0].Y++;
@@ -62,7 +62,7 @@ namespace Snake
                     }
                     break;
                 case Direction.Left:
-                    if (segments[0].X == 0) segments[0].X = (Screen.WIDTH - 1);
+                    if (segments[0].X == 0) segments[0].X = (Screen.FIELD_WIDTH - 1);
                     else
                     {
                         segments[0].X--;
@@ -72,7 +72,7 @@ namespace Snake
                     }
                     break;
                 case Direction.Up:
-                    if (segments[0].Y == 0) segments[0].Y = (Screen.HEIGHT - 1);
+                    if (segments[0].Y == 0) segments[0].Y = (Screen.FIELD_HEIGHT - 1);
                     else
                     {
                         segments[0].Y--;

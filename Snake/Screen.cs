@@ -9,56 +9,35 @@ namespace Snake
 {
     class Screen
     {
-        public const int WIDTH = 25;
-        public const int HEIGHT = 10;
-        private Cobra cobra;
+        public const int FIELD_WIDTH = 25;
+        public const int FIELD_HEIGHT = 10;
+        public int[,] field { get; set; }
+        int fieldXPosition, fieldYPosition;
         public int[,] canva { get; set; }
 
-        public Screen (Cobra cobra)
+        public Screen()
         {
-            this.cobra = cobra;
-            canva = new int[HEIGHT, WIDTH];
+            fieldXPosition = 1;
+            fieldYPosition = 1;
+            field = new int[FIELD_HEIGHT, FIELD_WIDTH];
+            canva = new int[FIELD_HEIGHT + 2, FIELD_WIDTH + 2];
+            InitializeCanva();
         }
 
         public void DrawCanva()
         {
-
-            SimpleDraw();
-
-            //Console.Write(sb);
-            DebugPerFrame();
+            PlaceFieldInCanva();
+            ColoredDraw();
+            //Console.Write(sb);;
         }
 
-        public void DebugPerFrame()
-        {
-
-            
-
-            //sb.Append("next head position: ");
-            //sb.Append(cobra.nextHeadPosition.X);
-            //sb.Append('/');
-            //sb.Append(cobra.nextHeadPosition.Y);
-            //sb.Append("    ");
-            //sb.Append("\n");
-            //for (int i = 0; i < cobra.tailSize + 1; i++)
-            //{
-            //    sb.Append(i);
-            //    sb.Append(": ");
-            //    sb.Append(cobra.segments[i].X);
-            //    sb.Append('/');
-            //    sb.Append(cobra.segments[i].Y);
-            //    sb.Append("    ");
-            //    sb.Append("\n");
-            //}
-            //Console.Write(sb);
-        }
 
         internal void SimpleDraw()
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < HEIGHT; i++)
+            for (int i = 0; i < canva.GetLength(0); i++)
             {
-                for (int j = 0; j < WIDTH; j++)
+                for (int j = 0; j < canva.GetLength(1); j++)
                 {
                     switch (canva[i, j])
                     {
@@ -83,8 +62,8 @@ namespace Snake
 
                             break;
                         default:
-                            sb.Append(' ');
-                            sb.Append(' ');
+                            sb.Append('╬');
+                            sb.Append('╬');
 
                             break;
                     }
@@ -94,17 +73,28 @@ namespace Snake
             Console.Write(sb);
         }
 
+        internal void PlaceFieldInCanva()
+        {
+            for (int i = 0; i < field.GetLength(0); i++)
+            {
+                for (int j = 0; j < field.GetLength(1); j++)
+                {
+                    canva[i + fieldYPosition, j + fieldXPosition] = field[i, j];
+                }
+            }
+        }
+
         internal void ColoredDraw()
         {
-            for (int i = 0; i < HEIGHT; i++)
+            for (int i = 0; i < canva.GetLength(0); i++)
             {
-                for (int j = 0; j < WIDTH; j++)
+                for (int j = 0; j < canva.GetLength(1); j++)
                 {
                     switch (canva[i, j])
                     {
                         case 0:
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            Console.Write("██");
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.Write("░░");
                             break;
                         case 1:
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -114,13 +104,24 @@ namespace Snake
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.Write("██");
                             break;
-                        default:
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("██");
+                        case -1:
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.Write("╬╬");
                             break;
                     }
                 }
                 Console.WriteLine();
+            }
+        }
+
+        internal void InitializeCanva()
+        {
+            for (int i = 0; i < canva.GetLength(0); i++)
+            {
+                for (int j = 0; j < canva.GetLength(1); j++)
+                {
+                    canva[i, j] = -1;
+                }
             }
         }
 

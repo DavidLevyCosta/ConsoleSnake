@@ -29,12 +29,12 @@ namespace Snake
         public Engine() {
             turnColided = false;
             cobra = new Cobra();
-            screen = new Screen(cobra);
+            screen = new Screen();
             controls = new Controls();
             rand = new Random();
             fruta = new Vector(0, 0);
-            fruta.X = rand.Next(4, (Screen.WIDTH - 1));
-            fruta.Y = rand.Next(4, (Screen.HEIGHT - 1));
+            fruta.X = rand.Next(4, (Screen.FIELD_WIDTH - 1));
+            fruta.Y = rand.Next(4, (Screen.FIELD_HEIGHT - 1));
 
             desiredFps = 6;
             gameThread = new Thread(onFrame);
@@ -65,9 +65,9 @@ namespace Snake
             if (!Colided() && !turnColided) { 
                 ChangeDirection();
                 cobra.Move();
-                for (int i = 0; i < Screen.HEIGHT; i++)
+                for (int i = 0; i < Screen.FIELD_HEIGHT; i++)
                 {
-                    for (int j = 0; j < Screen.WIDTH; j++)
+                    for (int j = 0; j < Screen.FIELD_WIDTH; j++)
                     {
 
                         if (cobra.segments[0].Y == fruta.Y && cobra.segments[0].X == fruta.X)
@@ -80,18 +80,18 @@ namespace Snake
 
                         if (i == cobra.segments[0].Y && j == cobra.segments[0].X)
                         {
-                            screen.canva[i, j] = 1;
+                            screen.field[i, j] = 1;
                         }
                         else if (i == fruta.Y && j == fruta.X) {
-                            screen.canva[i, j] = 2;
+                            screen.field[i, j] = 2;
                         }
-                        else screen.canva[i, j] = 0;
+                        else screen.field[i, j] = 0;
 
                         for (int k = 0; k < cobra.tailSize + 1; k++)
                         {
                             if (i == cobra.segments[k].Y && j == cobra.segments[k].X)
                             {
-                                screen.canva[i, j] = 1;
+                                screen.field[i, j] = 1;
                                 break;
                             }
                         }
@@ -176,7 +176,7 @@ namespace Snake
             Vector target;
             do
             {
-                target = new Vector(rand.Next(0, (Screen.WIDTH - 1)), rand.Next(0, (Screen.HEIGHT - 1)));
+                target = new Vector(rand.Next(0, (Screen.FIELD_WIDTH - 1)), rand.Next(0, (Screen.FIELD_HEIGHT - 1)));
 
             } while (cobra.segments.Contains(target));
 
@@ -188,7 +188,6 @@ namespace Snake
         public bool Colided()
         {
             List<Vector> tail = cobra.segments.GetRange(1, cobra.segments.Count - 1);
-            //return tail.Contains(cobra.frontPosition) || tail.Contains(cobra.turnPosition);
             return tail.Contains(cobra.frontPosition);
         }
         public void TurnColided(int X, int Y)
