@@ -36,7 +36,7 @@ namespace Snake
             fruta.X = rand.Next(4, (Screen.FIELD_WIDTH - 1));
             fruta.Y = rand.Next(4, (Screen.FIELD_HEIGHT - 1));
 
-            desiredFps = 6;
+            desiredFps = 12;
             gameThread = new Thread(onFrame);
             gameThread.IsBackground = false;
             inputThread = new Thread(InputRead);
@@ -65,39 +65,7 @@ namespace Snake
             if (!Colided() && !turnColided) { 
                 ChangeDirection();
                 cobra.Move();
-                for (int i = 0; i < Screen.FIELD_HEIGHT; i++)
-                {
-                    for (int j = 0; j < Screen.FIELD_WIDTH; j++)
-                    {
-
-                        if (cobra.segments[0].Y == fruta.Y && cobra.segments[0].X == fruta.X)
-                        {
-                            NewFrutaPosition();
-                            cobra.tailSize++;
-                            cobra.AddTail();
-
-                        }
-
-                        if (i == cobra.segments[0].Y && j == cobra.segments[0].X)
-                        {
-                            screen.field[i, j] = 1;
-                        }
-                        else if (i == fruta.Y && j == fruta.X) {
-                            screen.field[i, j] = 2;
-                        }
-                        else screen.field[i, j] = 0;
-
-                        for (int k = 0; k < cobra.tailSize + 1; k++)
-                        {
-                            if (i == cobra.segments[k].Y && j == cobra.segments[k].X)
-                            {
-                                screen.field[i, j] = 1;
-                                break;
-                            }
-                        }
-
-                    }
-                }               
+                UpdateField();        
             } 
             else
             {
@@ -195,6 +163,43 @@ namespace Snake
             Vector turnColision = new Vector(X, Y);
             List<Vector> tail = cobra.segments.GetRange(1, cobra.segments.Count - 1);
             turnColided = tail.Contains(turnColision) && cobra.tailSize > 3;
+        }
+        public void UpdateField()
+        {
+            for (int i = 0; i < Screen.FIELD_HEIGHT; i++)
+            {
+                for (int j = 0; j < Screen.FIELD_WIDTH; j++)
+                {
+
+                    if (cobra.segments[0].Y == fruta.Y && cobra.segments[0].X == fruta.X)
+                    {
+                        NewFrutaPosition();
+                        cobra.tailSize++;
+                        cobra.AddTail();
+
+                    }
+
+                    if (i == cobra.segments[0].Y && j == cobra.segments[0].X)
+                    {
+                        screen.field[i, j] = 1;
+                    }
+                    else if (i == fruta.Y && j == fruta.X)
+                    {
+                        screen.field[i, j] = 2;
+                    }
+                    else screen.field[i, j] = 0;
+
+                    for (int k = 0; k < cobra.tailSize + 1; k++)
+                    {
+                        if (i == cobra.segments[k].Y && j == cobra.segments[k].X)
+                        {
+                            screen.field[i, j] = 1;
+                            break;
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
