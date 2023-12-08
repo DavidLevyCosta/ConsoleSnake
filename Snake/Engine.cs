@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Threading;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snake;
 using System.Diagnostics;
-using System.IO;
+using System.Threading;
 
 namespace Snake
 {
@@ -26,7 +21,8 @@ namespace Snake
 
         byte desiredFps;
 
-        public Engine() {
+        public Engine()
+        {
             turnColided = false;
             cobra = new Cobra();
             screen = new Screen();
@@ -36,7 +32,7 @@ namespace Snake
             fruta.X = rand.Next(4, (Screen.FIELD_WIDTH - 1));
             fruta.Y = rand.Next(4, (Screen.FIELD_HEIGHT - 1));
 
-            desiredFps = 12;
+            desiredFps = 15;
             gameThread = new Thread(onFrame);
             gameThread.IsBackground = false;
             inputThread = new Thread(InputRead);
@@ -62,11 +58,12 @@ namespace Snake
 
         public void Update()
         {
-            if (!Colided() && !turnColided) { 
+            if (!Colided() && !turnColided)
+            {
                 ChangeDirection();
                 cobra.Move();
-                UpdateField();        
-            } 
+                UpdateField();
+            }
             else
             {
                 Console.WriteLine("Game Over!");
@@ -83,7 +80,6 @@ namespace Snake
 
         internal void ChangeDirection()
         {
-
             Key nextKeyInQueue;
             if (controls.keyQueue.TryDequeue(out nextKeyInQueue))
             {
@@ -131,7 +127,8 @@ namespace Snake
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                     controls.ReadKeys(keyInfo);
                     //Debug.WriteIf(controls.keyQueue.Count != 0, string.Join(", ", controls.keyQueue) + "\n");
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Debug.Write("falha ao ler input!\n" + e);
                 }
@@ -176,7 +173,6 @@ namespace Snake
                         NewFrutaPosition();
                         cobra.tailSize++;
                         cobra.AddTail();
-
                     }
 
                     if (i == cobra.segments[0].Y && j == cobra.segments[0].X)
@@ -197,7 +193,6 @@ namespace Snake
                             break;
                         }
                     }
-
                 }
             }
         }

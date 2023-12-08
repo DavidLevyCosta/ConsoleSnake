@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Snake
 {
@@ -28,7 +24,6 @@ namespace Snake
         {
             PlaceFieldInCanva();
             ColoredDraw();
-            //Console.Write(sb);;
         }
 
 
